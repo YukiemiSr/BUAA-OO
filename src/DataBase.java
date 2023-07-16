@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class DataBase {
     //记录学生的借阅记录
@@ -9,7 +10,8 @@ public class DataBase {
         this.studentRecords = new HashMap<>();
     }
 
-    public void borrowBook(Query query) {
+
+    public void borrowBook(Query query, Calender calender) {
         Record record;
         String id = query.getId();
         Book book = query.getQueryBook();
@@ -19,7 +21,7 @@ public class DataBase {
         } else {
             record = studentRecords.get(id);
         }
-        record.addBook(book);
+        record.addBook(book, calender);
     }
 
     public void returnBook(Query query) {
@@ -57,5 +59,15 @@ public class DataBase {
         }
         dataBase.setStudentRecords(s1);
         return dataBase;
+    }
+
+    public boolean queryLate(Calender calender, Query query) {
+        Integer x = studentRecords.get(query.getId()).getDate(query);
+        Integer now = calender.getCnt();
+        if (Objects.equals(query.getBookType(), "C")) {
+            return now - x > 60;
+        } else {
+            return now - x > 30;
+        }
     }
 }

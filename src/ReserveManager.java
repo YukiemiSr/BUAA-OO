@@ -16,15 +16,15 @@ public class ReserveManager {
         this.queryIntegerHashMap = new HashMap<>();
     }
 
-    public void addReserveQuery(Query query) {
+    public void addReserveQuery(Query query,Calender calender) {
         querySummary.add(query);
         queryIntegerHashMap.put(query, cnt++);
         String id = query.getId();
         if (reserveRecord.containsKey(id)) {
-            reserveRecord.get(id).addBook(query.getQueryBook());
+            reserveRecord.get(id).addBook(query.getQueryBook(),calender);
         } else {
             ReserveRecord record = new ReserveRecord(id);
-            record.addBook(query.getQueryBook());
+            record.addBook(query.getQueryBook(),calender);
             reserveRecord.put(id, record);
         }
     }

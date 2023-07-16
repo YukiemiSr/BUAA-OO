@@ -77,21 +77,23 @@ public class Library {
     public void outBorrow(Query query, Book book) {
         if (book != null) {
             String name = query.getId();
+            Calender calender1 = new Calender();
+            calender1.setCnt(calender.getCnt() + 1);
             if (!outRecord.containsKey(name)) {
                 Record record = new Record();
                 outRecord.put(name, record);
-                record.addBook(book);
+                record.addBook(book, calender1);
             } else {
-                outRecord.get(name).addBook(book);
+                outRecord.get(name).addBook(book, calender1);
             }
-            dataBaseTmp.borrowBook(query);
+            dataBaseTmp.borrowBook(query, calender1);
             tomorrowOutput.add(new Pair<>(query, book));
             output.transportOk(calender, book, book.getHome());
             output.stateTransfer(calender, book, "OwnLibrary", "tmp");
         } else { //走预定
             if (reserveManager.queryReserve(query) && !reserveManager.hasOrdered(query) &&
                 dataBase.query(query)) {
-                reserveManager.addReserveQuery(query);
+                reserveManager.addReserveQuery(query,calender);
                 output.reserveOk(calender, query);
                 output.record(calender, query, name);
                 if (!bookBase.queryBookExist(query)) {
@@ -112,8 +114,8 @@ public class Library {
                     if (Objects.equals(query.getBookType(), "B")) {
                         reserveManager.deleteReserveB(query.getId());
                     }
-                    dataBase.borrowBook(query);//加记录
-                    dataBaseTmp.borrowBook(query);
+                    dataBase.borrowBook(query, calender);//加记录
+                    dataBaseTmp.borrowBook(query, calender);
                 } else { //没借到书
                     stageBase.addBook(book);//放暂存
                     output.refuseLend(calender, query, query.getQueryBook());
@@ -135,7 +137,10 @@ public class Library {
 
     public void returnBook(Query query) {
         Book book = query.getQueryBook();
-        if (dataBase.queryDestroyed(query)) { //有书坏了
+        if (dataBase.queryLate(calender, query)) {
+            output.getPunished(calender, query);
+        }
+        if (dataBase.queryDestroyed(query)) {
             output.getPunished(calender, query);
             if (outRecord.containsKey(query.getId())) {
                 Book book1 = outRecord.get(query.getId()).getBook(query);
@@ -221,8 +226,8 @@ public class Library {
                 if (pair != null) {
                     ans.put(pair.getKey(), pair.getValue());
                     Query query = pair.getValue();
-                    dataBase.borrowBook(query);
-                    dataBaseTmp.borrowBook(query);
+                    dataBase.borrowBook(query, calender);
+                    dataBaseTmp.borrowBook(query, calender);
                 } else {
                     bookBase.returnBook(book);
                 }
@@ -304,5 +309,13 @@ public class Library {
 
     public void setDataBaseTmp() {
         dataBaseTmp = dataBase.clone();
+    }
+
+    public void orderNewBook() {
+
+    }
+
+    public void getOrderedBook() {
+
     }
 }

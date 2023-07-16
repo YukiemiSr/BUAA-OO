@@ -1,20 +1,30 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class Record {
     private final HashMap<String, ArrayList<Book>> hasLend;
+    private HashMap<String, Integer> btimelist;
+    private HashMap<String, Integer> ctimelist;
 
     public Record() { //一个是借书记录，一个是预订记录
         hasLend = new HashMap<>();
         hasLend.put("A", new ArrayList<>());
         hasLend.put("B", new ArrayList<>());
         hasLend.put("C", new ArrayList<>());
+        this.btimelist = new HashMap<>();
+        this.ctimelist = new HashMap<>();
     }
 
-    public void addBook(Book book) {
+    public void addBook(Book book, Calender calender) {
         ArrayList<Book> lendMap = hasLend.get(book.getType());
         lendMap.add(book);
+        if (Objects.equals(book.getType(), "B")) {
+            btimelist.put(book.getName(), calender.getCnt());
+        } else {
+            ctimelist.put(book.getName(), calender.getCnt());
+        }
     }
 
     public void subBook(Book book) {
@@ -28,6 +38,11 @@ public class Record {
         }
         if (book2 != null) {
             lendMap.remove(book2);
+        }
+        if (Objects.equals(book.getType(), "B")) {
+            btimelist.remove(book.getName());
+        } else {
+            ctimelist.remove(book.getName());
         }
     }
 
@@ -90,6 +105,8 @@ public class Record {
             book1.add(book.clone());
         }
         record.setBookList("C", book1);
+        record.setTimeList(this.btimelist, "B");
+        record.setTimeList(this.ctimelist, "C");
         return record;
     }
 
@@ -99,5 +116,34 @@ public class Record {
 
     public void setBookList(String s, ArrayList<Book> books) {
         this.hasLend.put(s, books);
+    }
+
+    public void setTimeList(HashMap<String, Integer> map, String type) {
+        HashMap<String, Integer> s1 = new HashMap<>();
+        if (Objects.equals(type, "B")) {
+            for (Map.Entry entry : map.entrySet()) {
+                String s = (String) entry.getKey();
+                Integer x = (Integer) entry.getValue();
+                s1.put(s, x);
+            }
+            this.btimelist = s1;
+        } else {
+            for (Map.Entry entry : map.entrySet()) {
+                String s = (String) entry.getKey();
+                Integer x = (Integer) entry.getValue();
+                s1.put(s, x);
+            }
+            this.ctimelist = s1;
+        }
+    }
+
+    public Integer getDate(Query query) {
+        String name = query.getQueryBook().getName();
+        String type = query.getBookType();
+        if (Objects.equals(type, "B")) {
+            return btimelist.get(name);
+        } else {
+            return ctimelist.get(name);
+        }
     }
 }

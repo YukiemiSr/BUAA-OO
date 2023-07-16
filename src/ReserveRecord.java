@@ -6,8 +6,8 @@ public class ReserveRecord extends Record {
         sum = 0;
     }
 
-    public void addBook(Book book) {
-        super.addBook(book);
+    public void addBook(Book book,Calender calender) {
+        super.addBook(book, calender);
         sum++;
     }
 

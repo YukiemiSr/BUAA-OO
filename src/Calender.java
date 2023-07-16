@@ -73,4 +73,8 @@ public class Calender {
     public Integer getCnt() {
         return cnt;
     }
+
+    public void setCnt(Integer i) {
+        this.cnt = i;
+    }
 }
