@@ -1,10 +1,11 @@
 import expr.Expr;
-import expr.Factor;
 import expr.Index;
 import expr.Number;
 import expr.Term;
+import expr.Factor;
+import expr.Sin;
 import expr.Variety;
-
+import expr.Cos;
 import java.math.BigInteger;
 import java.util.Objects;
 
@@ -17,11 +18,11 @@ public class Parser {
 
     public Expr parseExpr() {
         Expr expr = new Expr();
-        expr.addTerm(parseTerm(), "+");
+        expr.addTerm(parseTerm(),"+");
         while (lexer.peek().equals("+") || lexer.peek().equals("-")) {
             String x = lexer.peek();
             lexer.next();
-            expr.addTerm(parseTerm(), x);
+            expr.addTerm(parseTerm(),x);
         }
         return expr;
     }
@@ -52,21 +53,34 @@ public class Parser {
             Factor expr = parseExpr();
             lexer.next();
             return expr;
-        } else if (Objects.equals(lexer.peek(), "x") || Objects.equals(lexer.peek(), "y")
-            || Objects.equals(lexer.peek(), "z")) {
+        }
+        else if (lexer.peek().equals("sin") || lexer.peek().equals("cos")) {
+            if (lexer.peek().equals("sin")) {
+                lexer.next();
+                return new Sin(parseFactor().toPoly());
+            }
+            else {
+                lexer.next();
+                return new Cos(parseFactor().toPoly());
+            }
+        }
+        else if (Objects.equals(lexer.peek(), "x") || Objects.equals(lexer.peek(), "y")
+                || Objects.equals(lexer.peek(), "z")) {
             String s = lexer.peek();
             lexer.next();
             return new Variety(s);
-        } else if (Objects.equals(lexer.peek(), "+") || Objects.equals(lexer.peek(), "-")) {
+        }
+        else if (Objects.equals(lexer.peek(), "+") || Objects.equals(lexer.peek(), "-")) {
             String x = lexer.peek();
             lexer.next();
             BigInteger num = new BigInteger(lexer.peek());
             lexer.next();
-            return new Number(num, x);
-        } else {
+            return new Number(num,x);
+        }
+        else {
             BigInteger num = new BigInteger(lexer.peek());
             lexer.next();
-            return new Number(num, "+");
+            return new Number(num,"+");
         }
     }
 }

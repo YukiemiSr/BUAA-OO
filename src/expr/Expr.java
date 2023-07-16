@@ -13,7 +13,7 @@ public class Expr implements Factor {
         this.symbols = new ArrayList<>();
     }
 
-    public void addTerm(Term term, String symbol) {
+    public void addTerm(Term term,String symbol) {
         this.terms.add(term);
         this.symbols.add(symbol);
     }
@@ -31,10 +31,12 @@ public class Expr implements Factor {
                     poly.negative();
                 }
                 sym = 1;
-            } else {
+            }
+            else {
                 if (Objects.equals(s, "+")) {
                     temp = poly.addPoly(term.toPoly());
-                } else {
+                }
+                else {
                     temp = poly.subPoly(term.toPoly());
                 }
                 poly = temp;

@@ -18,6 +18,19 @@ public class Lexer {
         return sb.toString();
     }
 
+    private String getTriangle() {
+        StringBuilder sb = new StringBuilder();
+        if (input.charAt(pos) == 's') {
+            pos += 3;
+            sb.append("sin");
+        }
+        else if (input.charAt(pos) == 'c') {
+            pos += 3;
+            sb.append("cos");
+        }
+        return sb.toString();
+    }
+
     public void next() {
         if (pos == input.length()) {
             return;
@@ -26,17 +39,21 @@ public class Lexer {
         char c = input.charAt(pos);
         if (Character.isDigit(c)) {
             curToken = getNumber();
-        } else if ("xyz".indexOf(c) != -1) {
+        }
+        else if ("xyz".indexOf(c) != -1) {
             pos++;
             curToken = String.valueOf(c);
-        } else if ("()+*^-a".indexOf(c) != -1) {
+        }
+        else if ("()+*^-a".indexOf(c) != -1) {
             pos++;
             curToken = String.valueOf(c);
+        }
+        else if ("sc".indexOf(c) != -1) {
+            curToken = getTriangle();
         }
     }
 
     public String peek() {
         return this.curToken;
     }
-
 }

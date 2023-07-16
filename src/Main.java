@@ -5,8 +5,27 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        SF sf = new SF();
+        if (scanner.hasNext()) {
+            int k = Integer.parseInt(scanner.nextLine());
+            String s;
+            for (int i = 0; i < k; ++i) {
+                s = scanner.nextLine();
+                String s3;
+                s3 = sf.putin(s);
+                Der der = new Der();
+                String[] p = s3.split("=");
+                p[1] = der.deal((pre(p[1])));
+                String s1 = p[0] + "=" + p[1];
+                sf.addFun(pre(s1));
+            }
+        }
         String line = scanner.nextLine();
-        Lexer lexer = new Lexer(pre(line));
+        String s2;
+        s2 = sf.putin(pre(line));
+        Der der = new Der();
+        String s = der.deal(pre(s2));
+        Lexer lexer = new Lexer(pre(s));
         Parser parser = new Parser(lexer);
         Expr expr = parser.parseExpr();
         System.out.println(expr.toPoly().toString());
@@ -94,7 +113,7 @@ public class Main {
         while (pos < s2.length()) {
             if (pos < s2.length() - 1) {
                 if (s2.charAt(pos) == '(' && (s2.charAt(pos + 1) == '+'
-                    || s2.charAt(pos + 1) == '-')) {
+                        || s2.charAt(pos + 1) == '-')) {
                     s3.append(s2.charAt(pos));
                     s3.append('0');
                 } else {
