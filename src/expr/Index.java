@@ -27,11 +27,13 @@ public class Index implements Factor {
 
     public Poly toPoly() {
         Factor factor1 = this.factors.get(0);
+
         if (factors.size() == 1) {
             return factor1.toPoly();
-        } else {
+        }
+        else {
             Factor factor2 = this.factors.get(1);
-            return factor1.toPoly().powPoly(((Number) factor2).getNum().intValue());
+            return factor1.toPoly().powPoly(((Number)factor2).getNum().intValue());
         }
     }
 }

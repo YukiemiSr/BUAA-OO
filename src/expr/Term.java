@@ -32,11 +32,12 @@ public class Term implements Factor {
     public Poly toPoly() {
         Poly poly = new Poly();
         int sym = 0;
-        for (Factor factor : factors) {
+        for (Factor factor:factors) {
             if (sym == 0) {
                 poly = factor.toPoly();
                 sym = 1;
-            } else {
+            }
+            else {
                 poly = poly.mulPoly(factor.toPoly());
             }
         }
